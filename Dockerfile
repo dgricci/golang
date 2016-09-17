@@ -1,16 +1,10 @@
 ## Dockerfile for golang environment
-FROM dgricci/jessie:0.0.2
+FROM dgricci/build-jessie:0.0.1
 MAINTAINER Didier Richard <didier.richard@ign.fr>
 
-# g++, gcc for gco
 RUN \
     apt-get -qy update && \
-    apt-get install -qy --no-install-recommends \
-        g++ \
-        gcc \
-        libc6-dev \
-        make \
-    && rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/*
 
 ## different versions - use argument when defined otherwise use defaults
 ARG GOLANG_VERSION
