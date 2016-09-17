@@ -2,13 +2,14 @@
 % Didier Richard
 % rév. 0.0.1 du 01/08/2016
 % rév. 0.0.2 du 10/09/2016
+% rév. 0.0.3 du 17/09/2016
 
 ---
 
 # Building #
 
 ```bash
-$ docker build -t dgricci/golang:0.0.2 -t dgricci/golang:latest .
+$ docker build -t dgricci/golang:0.0.3 -t dgricci/golang:latest .
 ```
 
 ## Behind a proxy (e.g. 10.0.4.2:3128) ##
@@ -17,7 +18,7 @@ $ docker build -t dgricci/golang:0.0.2 -t dgricci/golang:latest .
 $ docker build \
     --build-arg http_proxy=http://10.0.4.2:3128/ \
     --build-arg https_proxy=http://10.0.4.2:3128/ \
-    -t dgricci/golang:0.0.2 -t dgricci/golang:latest .
+    -t dgricci/golang:0.0.3 -t dgricci/golang:latest .
 ```
 
 ## Build command with arguments default values ##
@@ -29,7 +30,7 @@ $ docker build \
     --build-arg GOLANG_DOWNLOAD_SHA256=cdde5e08530c0579255d6153b08fdb3b8e47caabbe717bc7bcd7561275a87aeb \
     --build-arg GOSU_VERSION=1.9 \
     --build-arg GOSU_DOWNLOAD_URL=https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture) \
-    -t dgricci/golang:0.0.2 -t dgricci/golang:latest .
+    -t dgricci/golang:0.0.3 -t dgricci/golang:latest .
 ```
 
 # Use #
