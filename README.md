@@ -136,7 +136,7 @@ echoerr () {
 # $1 : code de sortie
 usage () {
     cat >&2 <<EOF
-usage: `basename $0` [--help -h] | [--show -s] commandAndArguments
+usage: `basename $0` [--help -h] | [--show|-s] commandAndArguments
 
     --help, -h          : prints this help and exits
     --show, -s          : do not execute $theShell, just show the command to be executed
@@ -163,10 +163,15 @@ w="${PWD##${GOPATH}}"
 }
 cmdToExec="docker run -e USER_ID=${UID} -e USER_NAME=${USER} --name=\"go\" --rm=true -v${GOPATH}:/go -w/go${w} dgricci/golang $theShell"
 while [ $# -gt 0 ]; do
+    # protect back argument containing IFS characters ...
+    arg="$1"
+    [ $(echo -n ";$arg;" | tr "$IFS" "_") != ";$arg;" ] && {
+        arg="\"$arg\""
+    }
     if [ -n "${noMoreOptions}" ] ; then
-        cmdToExec="${cmdToExec} $1"
+        cmdToExec="${cmdToExec} $arg"
     else
-        case $1 in
+        case $arg in
         --help|-h)
             run -1 "${cmdToExec} --help"
             usage 0
@@ -182,7 +187,7 @@ while [ $# -gt 0 ]; do
             [ -z "${noMoreOptions}" ] && {
                 noMoreOptions=true
             }
-            cmdToExec="${cmdToExec} $1"
+            cmdToExec="${cmdToExec} $arg"
             ;;
         esac
     fi
