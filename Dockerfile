@@ -1,5 +1,5 @@
 ## Dockerfile for golang environment
-FROM dgricci/build-jessie:0.0.1
+FROM dgricci/build-jessie:0.0.2
 MAINTAINER Didier Richard <didier.richard@ign.fr>
 
 RUN \
@@ -8,11 +8,11 @@ RUN \
 
 ## different versions - use argument when defined otherwise use defaults
 ARG GOLANG_VERSION
-ENV GOLANG_VERSION ${GOLANG_VERSION:-1.6.3}
+ENV GOLANG_VERSION ${GOLANG_VERSION:-1.7.3}
 ARG GOLANG_DOWNLOAD_URL
 ENV GOLANG_DOWNLOAD_URL ${GOLANG_DOWNLOAD_URL:-https://golang.org/dl/go$GOLANG_VERSION.linux-amd64.tar.gz}
 ARG GOLANG_DOWNLOAD_SHA256
-ENV GOLANG_DOWNLOAD_SHA256 ${GOLANG_DOWNLOAD_SHA256:-cdde5e08530c0579255d6153b08fdb3b8e47caabbe717bc7bcd7561275a87aeb}
+ENV GOLANG_DOWNLOAD_SHA256 ${GOLANG_DOWNLOAD_SHA256:-508028aac0654e993564b6e2014bf2d4a9751e3b286661b0b0040046cf18028e}
 ENV GOPATH /go
 ENV GOBIN  $GOPATH/bin
 ENV PATH $GOBIN:/usr/local/go/bin:$PATH

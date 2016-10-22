@@ -3,13 +3,14 @@
 % rév. 0.0.1 du 01/08/2016
 % rév. 0.0.2 du 10/09/2016
 % rév. 0.0.3 du 17/09/2016
+% rév. 0.0.4 du 20/10/2016
 
 ---
 
 # Building #
 
 ```bash
-$ docker build -t dgricci/golang:0.0.3 -t dgricci/golang:latest .
+$ docker build -t dgricci/golang:0.0.4 -t dgricci/golang:latest .
 ```
 
 ## Behind a proxy (e.g. 10.0.4.2:3128) ##
@@ -18,19 +19,17 @@ $ docker build -t dgricci/golang:0.0.3 -t dgricci/golang:latest .
 $ docker build \
     --build-arg http_proxy=http://10.0.4.2:3128/ \
     --build-arg https_proxy=http://10.0.4.2:3128/ \
-    -t dgricci/golang:0.0.3 -t dgricci/golang:latest .
+    -t dgricci/golang:0.0.4 -t dgricci/golang:latest .
 ```
 
 ## Build command with arguments default values ##
 
 ```bash
 $ docker build \
-    --build-arg GOLANG_VERSION=1.6.3 \
+    --build-arg GOLANG_VERSION=1.7.3 \
     --build-arg GOLANG_DOWNLOAD_URL=https://golang.org/dl/go$GOLANG_VERSION.linux-amd64.tar.gz \
-    --build-arg GOLANG_DOWNLOAD_SHA256=cdde5e08530c0579255d6153b08fdb3b8e47caabbe717bc7bcd7561275a87aeb \
-    --build-arg GOSU_VERSION=1.9 \
-    --build-arg GOSU_DOWNLOAD_URL=https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture) \
-    -t dgricci/golang:0.0.3 -t dgricci/golang:latest .
+    --build-arg GOLANG_DOWNLOAD_SHA256=508028aac0654e993564b6e2014bf2d4a9751e3b286661b0b0040046cf18028e \
+    -t dgricci/golang:0.0.4 -t dgricci/golang:latest .
 ```
 
 # Use #
@@ -161,7 +160,7 @@ w="${PWD##${GOPATH}}"
 [ "${PWD}" = "${w}" ] && {
     echoerr 3 "The current directory is not a sub-directory of ${GOPATH}"
 }
-cmdToExec="docker run -e USER_ID=${UID} -e USER_NAME=${USER} --name=\"go\" --rm=true -v${GOPATH}:/go -w/go${w} dgricci/golang $theShell"
+cmdToExec="docker run -e USER_ID=${UID} -e USER_NAME=${USER} --name=\"go$$\" --rm=true -v${GOPATH}:/go -w/go${w} dgricci/golang $theShell"
 while [ $# -gt 0 ]; do
     # protect back argument containing IFS characters ...
     arg="$1"
