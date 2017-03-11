@@ -1,34 +1,24 @@
 ## Dockerfile for golang environment
-FROM dgricci/build-jessie:0.0.2
+FROM dgricci/build-jessie:0.0.4
 MAINTAINER Didier Richard <didier.richard@ign.fr>
-
-RUN \
-    apt-get -qy update && \
-    rm -rf /var/lib/apt/lists/*
 
 ## different versions - use argument when defined otherwise use defaults
 ARG GOLANG_VERSION
-ENV GOLANG_VERSION ${GOLANG_VERSION:-1.7.3}
+ENV GOLANG_VERSION ${GOLANG_VERSION:-1.8}
 ARG GOLANG_DOWNLOAD_URL
 ENV GOLANG_DOWNLOAD_URL ${GOLANG_DOWNLOAD_URL:-https://golang.org/dl/go$GOLANG_VERSION.linux-amd64.tar.gz}
 ARG GOLANG_DOWNLOAD_SHA256
-ENV GOLANG_DOWNLOAD_SHA256 ${GOLANG_DOWNLOAD_SHA256:-508028aac0654e993564b6e2014bf2d4a9751e3b286661b0b0040046cf18028e}
+ENV GOLANG_DOWNLOAD_SHA256 ${GOLANG_DOWNLOAD_SHA256:-53ab94104ee3923e228a2cb2116e5e462ad3ebaeea06ff04463479d7f12d27ca}
 ENV GOPATH /go
 ENV GOBIN  $GOPATH/bin
 ENV PATH $GOBIN:/usr/local/go/bin:$PATH
 
+COPY build.sh /tmp/build.sh
+
 ## install golang, then the sudo version in ... golang !
-## one could have download the source code and compile to go source !-)
-RUN \
-    curl -fsSL "$GOLANG_DOWNLOAD_URL" -o golang.tar.gz && \
-    echo "$GOLANG_DOWNLOAD_SHA256  golang.tar.gz" | sha256sum -c - && \
-    tar -C /usr/local -xzf golang.tar.gz && \
-    rm golang.tar.gz && \
-    gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 && \
-    mkdir -p "$GOPATH/src" "$GOPATH/bin" "$GOPATH/pkg" && chmod -R 777 "$GOPATH"
+RUN /tmp/build.sh && rm -f /tmp/build.sh
 
 WORKDIR $GOPATH
-
 # Cf. https://github.com/docker-library/golang/blob/master/1.6/wheezy/Dockerfile
 COPY go-wrapper /usr/local/go/bin/
 
