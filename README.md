@@ -4,13 +4,17 @@
 % rév. 0.0.2 du 10/09/2016
 % rév. 0.0.3 du 17/09/2016
 % rév. 0.0.4 du 20/10/2016
+% rév. 0.0.5 du 19/12/2016
+% rév. 0.0.6 du 19/02/2017
+% rév. 0.0.7 du 11/03/2017
 
 ---
 
 # Building #
 
 ```bash
-$ docker build -t dgricci/golang:0.0.4 -t dgricci/golang:latest .
+$ docker build -t dgricci/golang:$(< VERSION) .
+$ docker tag dgricci/golang:$(< VERSION) dgricci/golang:latest
 ```
 
 ## Behind a proxy (e.g. 10.0.4.2:3128) ##
@@ -19,17 +23,19 @@ $ docker build -t dgricci/golang:0.0.4 -t dgricci/golang:latest .
 $ docker build \
     --build-arg http_proxy=http://10.0.4.2:3128/ \
     --build-arg https_proxy=http://10.0.4.2:3128/ \
-    -t dgricci/golang:0.0.4 -t dgricci/golang:latest .
+    -t dgricci/golang:$(< VERSION) .
+$ docker tag dgricci/golang:$(< VERSION) dgricci/golang:latest
 ```
 
 ## Build command with arguments default values ##
 
 ```bash
 $ docker build \
-    --build-arg GOLANG_VERSION=1.7.3 \
+    --build-arg GOLANG_VERSION=1.8 \
     --build-arg GOLANG_DOWNLOAD_URL=https://golang.org/dl/go$GOLANG_VERSION.linux-amd64.tar.gz \
-    --build-arg GOLANG_DOWNLOAD_SHA256=508028aac0654e993564b6e2014bf2d4a9751e3b286661b0b0040046cf18028e \
-    -t dgricci/golang:0.0.4 -t dgricci/golang:latest .
+    --build-arg GOLANG_DOWNLOAD_SHA256=53ab94104ee3923e228a2cb2116e5e462ad3ebaeea06ff04463479d7f12d27ca \
+    -t dgricci/golang:$(< VERSION) .
+$ docker tag dgricci/golang:$(< VERSION) dgricci/golang:latest
 ```
 
 # Use #
@@ -37,48 +43,68 @@ $ docker build \
 See `dgricci/jessie` README for handling permissions with dockers volumes.
 
 ```bash
-$ cd src/go
+$ docker run -it --rm dgricci/golang
+go version go1.8 linux/amd64
+```
+
+## An example ##
+
+### run ###
+
+```bash
+$ mkdir -p test test/{bin,pkg,src} test/src/hello
+$ cd test
+$ cat > ./src/hello/world.go <<- EOF
+package main
+
+import "fmt"
+
+func main() {
+    fmt.Println("hello world")
+}
+EOF
 $ tree .
 .
 ├── bin
 ├── pkg
 └── src
-    └── pamplemousse
-        └── html2csv.go
+    └── hello
+        └── world.go
 
 4 directories, 1 files
-$ docker run -it --rm -v `pwd`:/go -e USER_ID=`id -u` dgricci/golang /bin/bash
-Starting container as user (1000:1000)
-user@<hash>:/go$ go get github.com/PuerkitoBio/goquery
-user@<hash>:/go$ cd src/pamplemousse
-user@<hash>:/go$ go build html2csv.go
-user@<hash>:/go$ ls -1
-html2csv
-html2csv.go
-user@<hash>:/go$ exit
-exit
-$ src/pamplemousse/html2csv 
-
-Usage: src/pamplemousse/html2csv URL
-For example :
-src/pamplemousse/html2csv http://localhost/~ricci/Pamplemousse-TSI-2015-2016.html
+$ docker run -i --rm -v `pwd`:/go -w/go/src/hello -e USER_ID=`id -u` dgricci/golang go run world.go
+hello world
 ```
+
+### build ###
 
 Let's suppose that the env variable GOPATH points at the current directory :
 
 ```bash
 $ pwd
-/home/ricci/src/go
+/home/dgricci/test
 $ echo $GOPATH
-/home/ricci/src/go
-$ cd src/remontees
-$ docker run --rm -v ${GOPATH}:/go -w/go${PWD##${GOPATH}} -e USER_ID=`id -u` -e USER_NAME=`whoami` dgricci/golang go build kml2mongo.go
-$ ls -lrt kml2mongo*
--rw-rw-r-- 1 ricci ricci    2165 août  18 13:45 kml2mongo.go
--rwxr-xr-x 1 ricci ricci 6124696 août  19 12:06 kml2mongo
+/home/dgricci/test
+$ cd src/hello
+$ docker run --rm -v${GOPATH}:/go -w/go${PWD##${GOPATH}} -e USER_ID=`id -u` -e USER_NAME=`whoami` dgricci/golang go build world.go
+$ ./world
+hello world
 ```
 
-# A shell to hide container's usage #
+## Tests ##
+
+Just launch `base-jessie.bats` (once `bats`[^bats] is installed on your
+system) :
+
+```bash
+$ ./golang.bats --tap
+1..3
+ok 1 check golang ok
+ok 2 run hello world
+ok 3 build hello world
+```
+
+## A shell to hide container's usage ##
 
 ```bash
 #!/bin/bash
@@ -203,5 +229,5 @@ __Et voilà !__
 
 _fin du document[^pandoc_gen]_
 
-[^pandoc_gen]: document généré via $ `pandoc -V fontsize=10pt -V geometry:"top=2cm, bottom=2cm, left=1cm, right=1cm" -s -N --toc -o pandoc.pdf README.md`{.bash}
+[^pandoc_gen]: document généré via $ `pandoc -V fontsize=10pt -V geometry:"top=2cm, bottom=2cm, left=1cm, right=1cm" -s -N --toc -o golang.pdf README.md`{.bash}
 
