@@ -1,17 +1,18 @@
 % Environnement GoLang
 % Didier Richard
-% 12/03/2017
+% 11/06/2017
 
 ---
 
 revision:
-    - 0.0.1 : 01/08/2016
-    - 0.0.2 : 10/09/2016
-    - 0.0.3 : 17/09/2016
-    - 0.0.4 : 20/10/2016
-    - 0.0.5 : 19/12/2016
-    - 0.0.6 : 19/02/2017
-    - 0.0.7 : 11/03/2017
+- 0.0.1 : 01/08/2016
+- 0.0.2 : 10/09/2016
+- 0.0.3 : 17/09/2016
+- 0.0.4 : 20/10/2016
+- 0.0.5 : 19/12/2016
+- 0.0.6 : 19/02/2017
+- 0.0.7 : 11/03/2017
+- 0.0.8 : 11/06/2017
 
 ---
 
@@ -36,9 +37,9 @@ $ docker tag dgricci/golang:$(< VERSION) dgricci/golang:latest
 
 ```bash
 $ docker build \
-    --build-arg GOLANG_VERSION=1.8 \
+    --build-arg GOLANG_VERSION=1.8.3 \
     --build-arg GOLANG_DOWNLOAD_URL=https://golang.org/dl/go$GOLANG_VERSION.linux-amd64.tar.gz \
-    --build-arg GOLANG_DOWNLOAD_SHA256=53ab94104ee3923e228a2cb2116e5e462ad3ebaeea06ff04463479d7f12d27ca \
+    --build-arg GOLANG_DOWNLOAD_SHA256=ff4895eb68fb1daaec41c540602e8bb4c1e8bb2f0e7017367171913fc9995ed2 \
     -t dgricci/golang:$(< VERSION) .
 $ docker tag dgricci/golang:$(< VERSION) dgricci/golang:latest
 ```
@@ -49,7 +50,7 @@ See `dgricci/jessie` README for handling permissions with dockers volumes.
 
 ```bash
 $ docker run -it --rm dgricci/golang
-go version go1.8 linux/amd64
+go version go1.8.3 linux/amd64
 ```
 
 ## An example ##
