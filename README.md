@@ -39,7 +39,7 @@ $ docker tag dgricci/golang:$(< VERSION) dgricci/golang:latest
 $ docker build \
     --build-arg GOLANG_VERSION=1.8.3 \
     --build-arg GOLANG_DOWNLOAD_URL=https://golang.org/dl/go$GOLANG_VERSION.linux-amd64.tar.gz \
-    --build-arg GOLANG_DOWNLOAD_SHA256=ff4895eb68fb1daaec41c540602e8bb4c1e8bb2f0e7017367171913fc9995ed2 \
+    --build-arg GOLANG_DOWNLOAD_SHA256=1862f4c3d3907e59b04a757cfda0ea7aa9ef39274af99a784f5be843c80c6772 \
     -t dgricci/golang:$(< VERSION) .
 $ docker tag dgricci/golang:$(< VERSION) dgricci/golang:latest
 ```
