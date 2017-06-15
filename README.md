@@ -1,6 +1,6 @@
 % Environnement GoLang
 % Didier Richard
-% 11/06/2017
+% 15/06/2017
 
 ---
 
@@ -13,6 +13,7 @@ revision:
 - 0.0.6 : 19/02/2017
 - 0.0.7 : 11/03/2017
 - 0.0.8 : 11/06/2017
+- 0.0.9 : 15/06/2017
 
 ---
 
@@ -40,6 +41,8 @@ $ docker build \
     --build-arg GOLANG_VERSION=1.8.3 \
     --build-arg GOLANG_DOWNLOAD_URL=https://golang.org/dl/go$GOLANG_VERSION.linux-amd64.tar.gz \
     --build-arg GOLANG_DOWNLOAD_SHA256=1862f4c3d3907e59b04a757cfda0ea7aa9ef39274af99a784f5be843c80c6772 \
+    --build-arg GLIDE_VERSION=v0.12.3 \
+    --build-arg GLIDE_DOWNLOAD_URL=https://github.com/Masterminds/glide/releases/download/$GLIDE_VERSION/glide-$GLIDE_VERSION-linux-amd64.tar.gz \
     -t dgricci/golang:$(< VERSION) .
 $ docker tag dgricci/golang:$(< VERSION) dgricci/golang:latest
 ```
@@ -120,11 +123,13 @@ ok 3 build hello world
 # Constantes :
 VERSION="0.9.0"
 # Variables globales :
-readonly -A commands=(
-[go]=""
-[godoc]=""
-[gofmt]=""
-)
+#readonly -A commands=(
+#[go]=""
+#[godoc]=""
+#[gofmt]=""
+#[glide]=""
+#[golint]=""
+#)
 #
 theShell="$(basename $0)"
 theShell="${theShell%.sh}"
