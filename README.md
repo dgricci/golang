@@ -121,7 +121,7 @@ ok 3 build hello world
 # Exécute le container docker dgricci/golang
 #
 # Constantes :
-VERSION="0.9.0"
+VERSION="0.11.0"
 # Variables globales :
 #readonly -A commands=(
 #[go]=""
@@ -190,14 +190,25 @@ EOF
 # main
 #
 [ -z "${GOPATH}" ] && {
-    echoerr 2 "Missing environment variable GOPATH"
+    echoerr 2 "ERR: Missing environment variable GOPATH"
 }
 # remove the GOPATH prefix ...
 w="${PWD##${GOPATH}}"
 [ "${PWD}" = "${w}" ] && {
-    echoerr 3 "The current directory is not a sub-directory of ${GOPATH}"
+    echoerr 3 "ERR: The current directory is not a sub-directory of ${GOPATH}"
 }
-cmdToExec="docker run -e USER_ID=${UID} -e USER_NAME=${USER} --name=\"go$$\" --rm=true -v${GOPATH}:/go -w/go${w} dgricci/golang $theShell"
+proxyEnv=""
+[ ! -z "${http_proxy}" ] && {
+    proxyEnv="-e http_proxy=${http_proxy}"
+}
+[ ! -z "${https_proxy}" ] && {
+    proxyEnv="${proxyEnv} -e https_proxy=${https_proxy}"
+}
+ttyEnv=""
+[ "${theShell}" = "glide" ] && {
+    ttyEnv="-it"
+}
+cmdToExec="docker run ${proxyEnv} ${ttyEnv} -e USER_ID=${UID} -e USER_NAME=${USER} --name=\"go$$\" --rm=true -v${GOPATH}:/go -w/go${w} dgricci/golang $theShell"
 while [ $# -gt 0 ]; do
     # protect back argument containing IFS characters ...
     arg="$1"
@@ -233,6 +244,7 @@ done
 run 100 "${cmdToExec}"
 
 exit 0
+
 ```
 
 __Et voilà !__
