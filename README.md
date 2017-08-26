@@ -1,6 +1,6 @@
 % Environnement GoLang
 % Didier Richard
-% 15/06/2017
+% 26/07/2017
 
 ---
 
@@ -14,6 +14,7 @@ revision:
 - 0.0.7 : 11/03/2017
 - 0.0.8 : 11/06/2017
 - 0.0.9 : 15/06/2017
+- 0.1.0 : 26/08/2017
 
 ---
 
@@ -38,9 +39,9 @@ $ docker tag dgricci/golang:$(< VERSION) dgricci/golang:latest
 
 ```bash
 $ docker build \
-    --build-arg GOLANG_VERSION=1.8.3 \
+    --build-arg GOLANG_VERSION=1.9 \
     --build-arg GOLANG_DOWNLOAD_URL=https://golang.org/dl/go$GOLANG_VERSION.linux-amd64.tar.gz \
-    --build-arg GOLANG_DOWNLOAD_SHA256=1862f4c3d3907e59b04a757cfda0ea7aa9ef39274af99a784f5be843c80c6772 \
+    --build-arg GOLANG_DOWNLOAD_SHA256=d70eadefce8e160638a9a6db97f7192d8463069ab33138893ad3bf31b0650a79 \
     --build-arg GLIDE_VERSION=v0.12.3 \
     --build-arg GLIDE_DOWNLOAD_URL=https://github.com/Masterminds/glide/releases/download/$GLIDE_VERSION/glide-$GLIDE_VERSION-linux-amd64.tar.gz \
     -t dgricci/golang:$(< VERSION) .
@@ -53,7 +54,7 @@ See `dgricci/jessie` README for handling permissions with dockers volumes.
 
 ```bash
 $ docker run -it --rm dgricci/golang
-go version go1.8.3 linux/amd64
+go version go1.9 linux/amd64
 ```
 
 ## An example ##
@@ -115,136 +116,38 @@ ok 3 build hello world
 
 ## A shell to hide container's usage ##
 
+As a matter of fact, typing the `docker run ...` long command is painfull !  
+In the [bin directory, the go.sh bash shell](bin/go.sh) can be invoked to ease
+the use of such a container. For instance (we suppose that the shell script
+has been copied in a bin directory and is in the user's PATH) :
+
 ```bash
-#!/bin/bash
-#
-# Exécute le container docker dgricci/golang
-#
-# Constantes :
-VERSION="0.11.0"
-# Variables globales :
-#readonly -A commands=(
-#[go]=""
-#[godoc]=""
-#[gofmt]=""
-#[glide]=""
-#[golint]=""
-#)
-#
-theShell="$(basename $0)"
-theShell="${theShell%.sh}"
-#
-unset show
-unset noMoreOptions
-#
-# Exécute ou affiche une commande
-# $1 : code de sortie en erreur
-# $2 : commande à exécuter
-run () {
-    local code=$1
-    local cmd=$2
-    if [ -n "${show}" ] ; then
-        echo "cmd: ${cmd}"
-    else
-        eval ${cmd}
-    fi
-    # go|godoc|gofmt --help returns 2 ...
-    [ ${code} -ge 0 -a $? -ne 0 ] && {
-        echo "Oops #################"
-        exit ${code#-} #absolute value of code
-    }
-    [ ${code} -ge 0 ] && {
-        return 0
-    }
-}
-#
-# Affichage d'erreur
-# $1 : code de sortie
-# $@ : message
-echoerr () {
-    local code=$1
-    shift
-    echo "$@" 1>&2
-    usage ${code}
-}
-#
-# Usage du shell :
-# $1 : code de sortie
-usage () {
-    cat >&2 <<EOF
-usage: `basename $0` [--help -h] | [--show|-s] commandAndArguments
+$ cd whatever/bin
+$ ln -s go.sh go
+$ ln -s go.sh godoc
+$ ln -s go.sh gofmt
+$ ln -s go.sh golint
+$ ln -s go.sh glide
+$ cd $GOPATH
+$ go version
+go version go1.9 linux/amd64
+```
 
-    --help, -h          : prints this help and exits
-    --show, -s          : do not execute $theShell, just show the command to be executed
+One can then get the golang standard library documentation locally :
 
-    commandAndArguments : arguments and/or options to be handed over to ${theShell}.
-                          The directory where this script is lauched is a
-                          sub-directory of GOPATH.
+```bash
+$ godoc -http=:6060
+dd6c108f994494665fb87bca445a776e646bf003a2195840250929ad91eb6c52
+$ firefox http://localhost:6060
+```
 
-    The GOPATH environment variable must be set to the directory containing
-    the golang sources, binaries and packages (aka golang projects !)
-EOF
-    exit $1
-}
-#
-# main
-#
-[ -z "${GOPATH}" ] && {
-    echoerr 2 "ERR: Missing environment variable GOPATH"
-}
-# remove the GOPATH prefix ...
-w="${PWD##${GOPATH}}"
-[ "${PWD}" = "${w}" ] && {
-    echoerr 3 "ERR: The current directory is not a sub-directory of ${GOPATH}"
-}
-proxyEnv=""
-[ ! -z "${http_proxy}" ] && {
-    proxyEnv="-e http_proxy=${http_proxy}"
-}
-[ ! -z "${https_proxy}" ] && {
-    proxyEnv="${proxyEnv} -e https_proxy=${https_proxy}"
-}
-ttyEnv=""
-[ "${theShell}" = "glide" ] && {
-    ttyEnv="-it"
-}
-cmdToExec="docker run ${proxyEnv} ${ttyEnv} -e USER_ID=${UID} -e USER_NAME=${USER} --name=\"go$$\" --rm=true -v${GOPATH}:/go -w/go${w} dgricci/golang $theShell"
-while [ $# -gt 0 ]; do
-    # protect back argument containing IFS characters ...
-    arg="$1"
-    [ $(echo -n ";$arg;" | tr "$IFS" "_") != ";$arg;" ] && {
-        arg="\"$arg\""
-    }
-    if [ -n "${noMoreOptions}" ] ; then
-        cmdToExec="${cmdToExec} $arg"
-    else
-        case $arg in
-        --help|-h)
-            run -1 "${cmdToExec} --help"
-            usage 0
-            ;;
-        --show|-s)
-            show=true
-            noMoreOptions=true
-            ;;
-        --)
-            noMoreOptions=true
-            ;;
-        *)
-            [ -z "${noMoreOptions}" ] && {
-                noMoreOptions=true
-            }
-            cmdToExec="${cmdToExec} $arg"
-            ;;
-        esac
-    fi
-    shift
-done
+Don't forget to stop and remove the container after usage :
 
-run 100 "${cmdToExec}"
-
-exit 0
-
+```bash
+$ docker stop dd6c108f9944
+dd6c108f9944
+$ docker rm dd6c108f9944
+dd6c108f9944
 ```
 
 __Et voilà !__
