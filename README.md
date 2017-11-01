@@ -127,6 +127,7 @@ $ ln -s go.sh go
 $ ln -s go.sh godoc
 $ ln -s go.sh gofmt
 $ ln -s go.sh golint
+$ ln -s go.sh dep
 $ ln -s go.sh glide
 $ cd $GOPATH
 $ go version
