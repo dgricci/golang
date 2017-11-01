@@ -3,7 +3,7 @@
 # Exécute le container docker dgricci/golang
 #
 # Constantes :
-VERSION="0.11.0"
+VERSION="0.12.0"
 # Variables globales :
 #readonly -A commands=(
 #[go]=""
@@ -11,6 +11,7 @@ VERSION="0.11.0"
 #[gofmt]=""
 #[glide]=""
 #[golint]=""
+#[dep]=""
 #)
 #
 proxyEnv=""
@@ -78,10 +79,10 @@ EOF
 processArg () {
     arg="$1"
     [ "${theShell}" = "godoc" ] && {
-        [ $(echo "$arg" | grep -c -e '-http=:') -eq 1 ] && {
+        [ $(echo "$arg" | grep -c -e '^-http=') -eq 1 ] && {
             dockerSpecialOpts="--detach=true"
             # start doc server background and bound port to host !
-            local port="${arg##-http=:}"
+            local port="$(echo ${arg} | sed -e 's/^-http=[^:]*:\([0-9]*\)/\1/')"
             dockerSpecialOpts="${dockerSpecialOpts} --publish=${port}:${port}"
         }
     }
@@ -104,7 +105,7 @@ w="${PWD##${GOPATH}}"
 [ ! -z "${https_proxy}" ] && {
     dockerCmd="${dockerCmd} -e https_proxy=${https_proxy}"
 }
-[ "${theShell}" = "glide" ] && {
+[ "${theShell}" = "glide" -o "${theSell}" = "dep" ] && {
     dockerCmd="${dockerCmd} -it"
 }
 dockerCmd="${dockerCmd} -w/go${w}"

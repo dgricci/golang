@@ -24,10 +24,16 @@ rmdir $GOROOT/bin/linux-amd64
 rm $gliderelease
 
 mkdir -p $GOPATH/{src,bin,pkg} && chmod -R 777 "$GOPATH"
+# install dep (will replace glide)
+go get -u github.com/golang/dep/cmd/dep
+mv $GOPATH/bin/dep $GOROOT/bin/
+
+# install golint
 go get -u github.com/golang/lint/golint
 mv $GOPATH/bin/golint $GOROOT/bin/
-mv $GOPATH/pkg/linux_amd64/github.com/ $GOROOT/pkg/
-mv $GOPATH/pkg/linux_amd64/golang.org/ $GOROOT/pkg/
+
+mv $GOPATH/pkg/linux_amd64/github.com/ $GOROOT/pkg/linux_amd64/
+mv $GOPATH/pkg/linux_amd64/golang.org/ $GOROOT/pkg/linux_amd64/
 rmdir $GOPATH/pkg/linux_amd64
 rm -fr $GOPATH/src/github.com/
 rm -fr $GOPATH/src/golang.org/

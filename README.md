@@ -1,6 +1,6 @@
 % Environnement GoLang
 % Didier Richard
-% 26/07/2017
+% 01/11/2017
 
 ---
 
@@ -15,6 +15,7 @@ revision:
 - 0.0.8 : 11/06/2017
 - 0.0.9 : 15/06/2017
 - 0.1.0 : 26/08/2017
+- 0.1.1 : 01/11/2017
 
 ---
 
@@ -39,10 +40,10 @@ $ docker tag dgricci/golang:$(< VERSION) dgricci/golang:latest
 
 ```bash
 $ docker build \
-    --build-arg GOLANG_VERSION=1.9 \
+    --build-arg GOLANG_VERSION=1.9.2 \
     --build-arg GOLANG_DOWNLOAD_URL=https://golang.org/dl/go$GOLANG_VERSION.linux-amd64.tar.gz \
-    --build-arg GOLANG_DOWNLOAD_SHA256=d70eadefce8e160638a9a6db97f7192d8463069ab33138893ad3bf31b0650a79 \
-    --build-arg GLIDE_VERSION=v0.12.3 \
+    --build-arg GOLANG_DOWNLOAD_SHA256=de874549d9a8d8d8062be05808509c09a88a248e77ec14eb77453530829ac02b \
+    --build-arg GLIDE_VERSION=v0.13.0 \
     --build-arg GLIDE_DOWNLOAD_URL=https://github.com/Masterminds/glide/releases/download/$GLIDE_VERSION/glide-$GLIDE_VERSION-linux-amd64.tar.gz \
     -t dgricci/golang:$(< VERSION) .
 $ docker tag dgricci/golang:$(< VERSION) dgricci/golang:latest
@@ -54,7 +55,7 @@ See `dgricci/jessie` README for handling permissions with dockers volumes.
 
 ```bash
 $ docker run -it --rm dgricci/golang
-go version go1.9 linux/amd64
+go version go1.9.2 linux/amd64
 ```
 
 ## An example ##
@@ -103,8 +104,7 @@ hello world
 
 ## Tests ##
 
-Just launch `base-jessie.bats` (once `bats`[^bats] is installed on your
-system) :
+Just launch `base-jessie.bats` (once `bats`[^bats] is installed on your system) :
 
 ```bash
 $ ./golang.bats --tap
@@ -130,7 +130,7 @@ $ ln -s go.sh golint
 $ ln -s go.sh glide
 $ cd $GOPATH
 $ go version
-go version go1.9 linux/amd64
+go version go1.9.2 linux/amd64
 ```
 
 One can then get the golang standard library documentation locally :
