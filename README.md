@@ -1,21 +1,22 @@
 % Environnement GoLang
 % Didier Richard
-% 01/11/2017
+% 19/02/2018
 
 ---
 
 revision:
-- 0.0.1 : 01/08/2016
-- 0.0.2 : 10/09/2016
-- 0.0.3 : 17/09/2016
-- 0.0.4 : 20/10/2016
-- 0.0.5 : 19/12/2016
-- 0.0.6 : 19/02/2017
-- 0.0.7 : 11/03/2017
-- 0.0.8 : 11/06/2017
-- 0.0.9 : 15/06/2017
-- 0.1.0 : 26/08/2017
-- 0.1.1 : 01/11/2017
+- 0.0.1 : 01/08/2016  
+- 0.0.2 : 10/09/2016  
+- 0.0.3 : 17/09/2016  
+- 0.0.4 : 20/10/2016  
+- 0.0.5 : 19/12/2016  
+- 0.0.6 : 19/02/2017  
+- 0.0.7 : 11/03/2017  
+- 0.0.8 : 11/06/2017  
+- 0.0.9 : 15/06/2017  
+- 0.1.0 : 26/08/2017  
+- 0.1.1 : 01/11/2017  
+- 0.1.2 : 19/02/2018  
 
 ---
 
@@ -40,10 +41,10 @@ $ docker tag dgricci/golang:$(< VERSION) dgricci/golang:latest
 
 ```bash
 $ docker build \
-    --build-arg GOLANG_VERSION=1.9.2 \
+    --build-arg GOLANG_VERSION=1.10 \
     --build-arg GOLANG_DOWNLOAD_URL=https://golang.org/dl/go$GOLANG_VERSION.linux-amd64.tar.gz \
-    --build-arg GOLANG_DOWNLOAD_SHA256=de874549d9a8d8d8062be05808509c09a88a248e77ec14eb77453530829ac02b \
-    --build-arg GLIDE_VERSION=v0.13.0 \
+    --build-arg GOLANG_DOWNLOAD_SHA256=b5a64335f1490277b585832d1f6c7f8c6c11206cba5cd3f771dcb87b98ad1a33 \
+    --build-arg GLIDE_VERSION=v0.13.1 \
     --build-arg GLIDE_DOWNLOAD_URL=https://github.com/Masterminds/glide/releases/download/$GLIDE_VERSION/glide-$GLIDE_VERSION-linux-amd64.tar.gz \
     -t dgricci/golang:$(< VERSION) .
 $ docker tag dgricci/golang:$(< VERSION) dgricci/golang:latest
@@ -55,7 +56,7 @@ See `dgricci/jessie` README for handling permissions with dockers volumes.
 
 ```bash
 $ docker run -it --rm dgricci/golang
-go version go1.9.2 linux/amd64
+go version go1.10 linux/amd64
 ```
 
 ## An example ##
@@ -104,14 +105,14 @@ hello world
 
 ## Tests ##
 
-Just launch `base-jessie.bats` (once `bats`[^bats] is installed on your system) :
+Just launch `golang.bats` (once `bats`[^bats] is installed on your system) :
 
 ```bash
 $ ./golang.bats --tap
 1..3
 ok 1 check golang ok
 ok 2 run hello world
-ok 3 build hello world
+ok 3 build hello world then launch
 ```
 
 ## A shell to hide container's usage ##
