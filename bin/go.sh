@@ -3,7 +3,7 @@
 # Exécute le container docker dgricci/golang
 #
 # Constantes :
-VERSION="0.12.0"
+VERSION="0.13.0"
 # Variables globales :
 #readonly -A commands=(
 #[go]=""
@@ -16,7 +16,7 @@ VERSION="0.12.0"
 #
 proxyEnv=""
 theShell="$(basename $0 | sed -e 's/\.sh$//')"
-dockerCmd="docker run -e USER_ID=${UID} -e USER_NAME=${USER} --name=\"go$$\" -v${GOPATH}:/go"
+dockerCmd="docker run -e USER_ID=${UID} -e USER_NAME=${USER} --name=\"go$$\""
 dockerSpecialOpts="--rm=true"
 dockerImg="dgricci/golang"
 cmdToExec="$theShell"
@@ -51,8 +51,20 @@ run () {
 echoerr () {
     local code=$1
     shift
-    echo "$@" 1>&2
-    usage ${code}
+    [ ${code} -ne 0 ] && {
+        echo -n "$(tput bold)" 1>&2
+        [ ${code} -gt 0 ] && {
+            echo -n "$(tput setaf 1)ERR" 1>&2
+        }
+        [ ${code} -lt 0 ] && {
+            echo -n "$(tput setaf 2)WARN" 1>&2
+        }
+        echo -n ": $(tput sgr 0)" 1>&2
+    }
+    echo -e "$@" 1>&2
+    [ ${code} -ge 0 ] && {
+        usage ${code}
+    }
 }
 #
 # Usage du shell :
@@ -92,12 +104,17 @@ processArg () {
 # main
 #
 [ -z "${GOPATH}" ] && {
-    echoerr 2 "ERR: Missing environment variable GOPATH"
+    #echoerr 2 "ERR: Missing environment variable GOPATH"
+    echoerr -1 "Missing environment variable GOPATH. Set to ${PWD}.\n"
+    export GOPATH="${PWD}"
 }
+dockerCmd="${dockerCmd} -v${GOPATH}:/go"
 # remove the GOPATH prefix ...
 w="${PWD##${GOPATH}}"
 [ "${PWD}" = "${w}" ] && {
-    echoerr 3 "ERR: The current directory is not a sub-directory of ${GOPATH}"
+    #echoerr 3 "ERR: The current directory is not a sub-directory of ${GOPATH}"
+    echoerr -2 "The current directory is not a sub-directory of ${GOPATH}. Some commands may failed in that case.\n"
+    w=""
 }
 [ ! -z "${http_proxy}" ] && {
     dockerCmd="${dockerCmd} -e http_proxy=${http_proxy}"
