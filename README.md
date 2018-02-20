@@ -1,5 +1,5 @@
-% Environnement GoLang
-% Didier Richard
+% Environnement GoLang  
+% Didier Richard  
 % 19/02/2018
 
 ---
