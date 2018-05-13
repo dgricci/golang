@@ -14,14 +14,15 @@ echo "$GOLANG_DOWNLOAD_SHA256  $gobinrelease" | sha256sum -c -
 tar -C /usr/local -xzf $gobinrelease
 rm $gobinrelease
 
-# install glide
-gliderelease="/tmp/glide.tar.gz"
 mkdir -p $GOROOT/bin && chmod -R 777 $GOROOT
-curl -fsSL "$GLIDE_DOWNLOAD_URL" -o $gliderelease
-tar -C $GOROOT/bin -xzf $gliderelease
-find $GOROOT/bin/linux-amd64 -type f -exec mv {} $GOROOT/bin/ \;
-rmdir $GOROOT/bin/linux-amd64
-rm $gliderelease
+# 13/05/2018 : glide removed, use dep
+## install glide
+#gliderelease="/tmp/glide.tar.gz"
+#curl -fsSL "$GLIDE_DOWNLOAD_URL" -o $gliderelease
+#tar -C $GOROOT/bin -xzf $gliderelease
+#find $GOROOT/bin/linux-amd64 -type f -exec mv {} $GOROOT/bin/ \;
+#rmdir $GOROOT/bin/linux-amd64
+#rm $gliderelease
 
 mkdir -p $GOPATH/{src,bin,pkg} && chmod -R 777 "$GOPATH"
 # install dep (will replace glide)
