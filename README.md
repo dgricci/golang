@@ -1,6 +1,6 @@
 % Environnement GoLang  
 % Didier Richard  
-% 13/05/2018
+% 09/07/2018
 
 ---
 
@@ -18,6 +18,7 @@ revision:
 - 0.1.1 : 01/11/2017  
 - 0.1.2 : 19/02/2018  
 - 0.2.0 : 13/05/2018  
+- 0.2.1 : 09/07/2018  
 
 ---
 
@@ -42,11 +43,9 @@ $ docker tag dgricci/golang:$(< VERSION) dgricci/golang:latest
 
 ```bash
 $ docker build \
-    --build-arg GOLANG_VERSION=1.10 \
+    --build-arg GOLANG_VERSION=1.10.3 \
     --build-arg GOLANG_DOWNLOAD_URL=https://golang.org/dl/go$GOLANG_VERSION.linux-amd64.tar.gz \
-    --build-arg GOLANG_DOWNLOAD_SHA256=4b677d698c65370afa33757b6954ade60347aaca310ea92a63ed717d7cb0c2ff \
-    --build-arg GLIDE_VERSION=v0.13.1 \
-    --build-arg GLIDE_DOWNLOAD_URL=https://github.com/Masterminds/glide/releases/download/$GLIDE_VERSION/glide-$GLIDE_VERSION-linux-amd64.tar.gz \
+    --build-arg GOLANG_DOWNLOAD_SHA256=fa1b0e45d3b647c252f51f5e1204aba049cde4af177ef9f2181f43004f901035 \
     -t dgricci/golang:$(< VERSION) .
 $ docker tag dgricci/golang:$(< VERSION) dgricci/golang:latest
 ```
@@ -57,7 +56,7 @@ See `dgricci/jessie` README for handling permissions with dockers volumes.
 
 ```bash
 $ docker run -it --rm dgricci/golang:$(< VERSION)
-go version go1.10.2 linux/amd64
+go version go1.10.3 linux/amd64
 ```
 
 ## An example ##
@@ -133,7 +132,7 @@ $ ln -s go.sh dep
 $ ln -s go.sh glide
 $ cd $GOPATH
 $ go version
-go version go1.10.2 linux/amd64
+go version go1.10.3 linux/amd64
 ```
 
 One can then get the golang standard library documentation locally :
